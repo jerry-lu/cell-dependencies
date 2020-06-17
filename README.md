@@ -1,8 +1,8 @@
 # cell-dependencies
 
-## Parse Python computational notebooks to get cell dependencies
+Parse Python computational notebooks to get cell dependencies
 
-### Requirements
+## Requirements
 
 You will need to install [this library](https://github.com/andrewhead/python-program-analysis/) and modify the relative path to that library in `cell_utils.js`
 
@@ -18,4 +18,4 @@ The execution count is the number that appears by the cell when you run it, and 
 
 `graph_visual.py` outputs a dependency graph of the cells
 
-![dependency graph](news_cat.gv.pdf)
+![dependency graph](news_cat.gv.pdf?raw=true)
