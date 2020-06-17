@@ -1,4 +1,4 @@
-var py = require("../python-program-analysis");
+var py = require("../../python-program-analysis");
 
 module.exports = {
     getSourceFromCell: function(cell){
