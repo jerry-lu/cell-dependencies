@@ -18,4 +18,4 @@ The execution count is the number that appears by the cell when you run it, and 
 
 `graph_visual.py` outputs a dependency graph of the cells
 
-![dependency graph](news_cat.gv.pdf?raw=true)
+![dependency graph](news_cat.gv.pdf)
