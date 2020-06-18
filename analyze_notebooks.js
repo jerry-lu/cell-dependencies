@@ -1,9 +1,12 @@
 var dep = require("./cell_deps.js");
 var fs = require('fs');
 
-const path = "./notebook_collection/";
+const args = process.argv.slice(2);
+const path = args[0] + "/";
+
+let printMode = args[0];
+
 //const name = "news_cat_fixed.ipynb";
-let printMode = "count"
 let reactiveCount = 0;
 let topdownCount = 0;
 let notebookCount = 0;

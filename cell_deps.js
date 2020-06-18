@@ -4,7 +4,7 @@ var utils = require("./cell_utils.js");
 function printDependencies(cells, printMode, dict){
     for (let cell of cells){
         cell.dependentOn.forEach(element =>
-            console.log(utils.printCell(element, printMode, dict) + " -> " + utils.printCell(cell.metadata.persistent_id, printMode, dict)));
+            console.log(utils.printCell(element, printMode, dict) + " -> " + utils.printCell(cell.execution_count, printMode, dict)));
     }
 }
 
@@ -19,7 +19,7 @@ module.exports = {
         const programSrc = fs.readFileSync(name).toString();
         const programJson = JSON.parse(programSrc);
         
-        //dict is a dictionary pointing from unique ids to the corresponding cell 
+        //dict is a dictionary pointing from execution_count to the corresponding cell 
         let dict = new Object();
         let cells = [];
         let text = "";
@@ -33,7 +33,7 @@ module.exports = {
                 cell.dependentOn = [];
                 currentLine += cellLength;
                 cells.push(cell);
-            dict[cell.metadata.persistent_id] = cell;
+            dict[cell.execution_count] = cell;
             }
         }
 
@@ -53,12 +53,11 @@ module.exports = {
                 }
             })
     
-            if (useCell !== undefined && !useCell.dependentOn.includes(defCell.metadata.persistent_id)){
-                useCell.dependentOn.push(defCell.metadata.persistent_id);
+            if (useCell !== undefined && !useCell.dependentOn.includes(defCell.execution_count)){
+                useCell.dependentOn.push(defCell.execution_count);
             }
         }
     
-        if (printMode === undefined){	printMode = "id";	}
         let idx = utils.getRandomInt(0, cells.length-1)
         let selectedCell = cells[idx];
 

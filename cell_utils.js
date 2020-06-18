@@ -44,17 +44,16 @@ module.exports = {
 		return visited;
 	},
 
-	// printCell takes in a uid and outputs the corresponding cell according to the mode parameter
-	printCell: function(uid, mode, dict){
-		let currentCell = dict[uid];
-		if (mode === "id"){
-			return uid.slice(0, 8);
-		} else if (mode === "code"){
+	// printCell takes in an execution count and outputs the corresponding cell according to the mode parameter
+	printCell: function(count, mode, dict){
+		let currentCell = dict[count];
+		if (mode === "code"){
 			return utils.getSourceFromCell(currentCell);
 		} else if (mode === "line"){
 			return currentCell.lineNos;
-		} else if (mode == "count"){
-			return currentCell.execution_count;
+		} else {
+			// (mode == "count")
+			return count;
 		}
 	}
 }
