@@ -25,14 +25,16 @@ module.exports = {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	},
 
-	breadthFirstSearch: function(cell, dict){
-		visited = new Set();
-		stack = [cell];
+	breadthFirstSearch: function(cell, dict, searchDependents=false){
+		let visited = new Set();
+		let stack = [cell];
+		let neighbors = [];
 		while (stack.length > 0){
 			let current = stack.pop();
 			visited.add(current);
-			if (current.dependentOn !== undefined){
-				current.dependentOn.forEach(neighbor => {
+			searchDependents ? neighbors = current.dependents : neighbors = current.dependentOn;
+			if (neighbors !== undefined){
+				neighbors.forEach(neighbor => {
 					neighbor = dict[neighbor];
 					if (!visited.has(neighbor)){
 						stack.push(neighbor);

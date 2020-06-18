@@ -25,17 +25,32 @@ module.exports = {
         let text = "";
         let currentLine = 1;
         
+        if (programJson.nbformat < 4){
+            console.log(`Error: ${name} Notebook version out of date`);
+            return ({reactive: 0, topDown: 0});
+        }
+
         for (let cell of programJson.cells){
             if (cell.cell_type === 'code'){
+                var sourceCode = "";
+                for (let line of utils.getSourceFromCell(cell)) {
+                    if (line[0] == '%') {
+                        line = "#" + line;
+                    }
+                    sourceCode += line;
+                }
                 let cellLength = cell.source.length;
-            text += utils.getSourceFromCell(cell) + "\n"
+                text += sourceCode + "\n";
                 cell.lineNos = [currentLine, currentLine + cellLength - 1];
                 cell.dependentOn = [];
+                cell.dependents = [];
                 currentLine += cellLength;
                 cells.push(cell);
-            dict[cell.execution_count] = cell;
+                dict[cell.execution_count] = cell;
             }
         }
+
+        console.log(text);
 
         flows = utils.getDefUse(text);
 
@@ -55,6 +70,7 @@ module.exports = {
     
             if (useCell !== undefined && !useCell.dependentOn.includes(defCell.execution_count)){
                 useCell.dependentOn.push(defCell.execution_count);
+                defCell.dependents.push(useCell.execution_count);
             }
         }
     
@@ -65,18 +81,22 @@ module.exports = {
         //printDependencies(cells, printMode, dict);
 
         console.log(`\nWe want to execute cell number ${ selectedCell.execution_count } in ${name}`);
-        //console.log(utils.getSourceFromCell(selectedCell));
+        console.log(utils.getSourceFromCell(selectedCell));
         console.log("\nthese are the cells it depends on \n")
         ancestors = utils.breadthFirstSearch(selectedCell, dict);
         console.log(cellSetToArray(ancestors));
 
-        console.log(`\nReactive: run ${ ancestors.size } cells`);
+        console.log("these are the children cells that would have to be run under a reactive paradigm");
+        children = utils.breadthFirstSearch(selectedCell, dict, true);
+        console.log(cellSetToArray(children));
 
-        // how many would we have to run if we assume top down?
-        // if top down, then we run every cell prior to the current one
-        // i.e. if the current index is idx, then we run cells 0 through (idx - 1)
-        console.log(`Top-down: run ${ idx } cells`);
-        return ({reactive: ancestors.size, topDown: idx});
+        // if top down, then we run every prior cell
+        // let the index of the cell be idx, then we run cells 0 through (idx - 1)
+        console.log(`\nTop-down: run ${ idx } cells`);
+        console.log(`Reactive: run ${ children.size } cells`);
+        console.log(`Reacursive: run ${ ancestors.size } cells`);
+
+        return ({recursive: ancestors.size, reactive: children.size, topDown: idx});
 
     }
 }
