@@ -22,6 +22,7 @@ fs.readdirSync(path).forEach(file => {
         let cellCounts = dep.calculateCells(path + file, printMode);
         reactiveCount += cellCounts.reactive;
         topdownCount += cellCounts.topDown;
+        recursiveCount += cellCounts.recursive;
         notebookCount += 1;
     }
 });

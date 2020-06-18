@@ -1,5 +1,7 @@
 var fs = require('fs');
 var utils = require("./cell_utils.js");
+const { get } = require('http');
+const { getSourceFromCell } = require('./cell_utils.js');
 
 function printDependencies(cells, printMode, dict){
     for (let cell of cells){
@@ -33,8 +35,8 @@ module.exports = {
         for (let cell of programJson.cells){
             if (cell.cell_type === 'code'){
                 var sourceCode = "";
-                for (let line of utils.getSourceFromCell(cell)) {
-                    if (line[0] == '%') {
+                for (let line of cell.source) {
+                    if (line[0] == '%' || line[0] == '!') {
                         line = "#" + line;
                     }
                     sourceCode += line;
@@ -50,7 +52,7 @@ module.exports = {
             }
         }
 
-        console.log(text);
+        //console.log(text);
 
         flows = utils.getDefUse(text);
 
@@ -81,7 +83,7 @@ module.exports = {
         //printDependencies(cells, printMode, dict);
 
         console.log(`\nWe want to execute cell number ${ selectedCell.execution_count } in ${name}`);
-        console.log(utils.getSourceFromCell(selectedCell));
+        //console.log(utils.getSourceFromCell(selectedCell));
         console.log("\nthese are the cells it depends on \n")
         ancestors = utils.breadthFirstSearch(selectedCell, dict);
         console.log(cellSetToArray(ancestors));
